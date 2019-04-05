@@ -6,8 +6,8 @@ import (
 )
 
 func NewDBConn() *gorm.DB {
-	//db, err := gorm.Open("mysql", "root:book@tcp(book_db:3306)/book?charset=utf8&parseTime=True&loc=Local")
-	db, err := gorm.Open("mysql", "root:book@tcp(localhost:13306)/book?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open("mysql", "root:book@tcp(book_db:3306)/book?charset=utf8&parseTime=True&loc=Local")
+	//db, err := gorm.Open("mysql", "root:book@tcp(localhost:13306)/book?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		panic(err)
 	}
