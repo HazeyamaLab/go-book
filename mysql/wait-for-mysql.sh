@@ -14,4 +14,4 @@ done
 
 echo "app is starting...!"
 
-exec gin_api
+exec go-book

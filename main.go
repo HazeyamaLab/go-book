@@ -14,6 +14,7 @@ func main() {
 
 	// server 起動
 	r := gin.Default()
+	r.LoadHTMLGlob("view/*.html")
 
 	//routing
 	r.GET("/", bookController.Index)

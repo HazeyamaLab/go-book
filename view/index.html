@@ -12,7 +12,7 @@
 </header>
 <div class="wrap">
     <div class="input">
-        <form action="/new" method="post">
+        <form action="/create" method="post">
             <p>Title :<input type="text" name="title" size="30"placeholder="タイトル名"/></p>
             <p>Price :<input type="text" name="price" size="30" placeholder="値段" /></p>
             <p><input type="submit" value="Send" /></p>
@@ -25,7 +25,7 @@
         {{range.books}}
             <li>
                 Title:{{.Title}}、Price:{{.Price}}
-                <label><a href="/edit/@{{.ID}}">編集</a></label>
+                <label><a href="/update/@{{.ID}}">編集</a></label>
                 <label><a href="/delete/confirm/@{{.ID}}">削除</a></label>
             </li>
         {{end}}

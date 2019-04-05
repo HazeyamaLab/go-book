@@ -14,4 +14,5 @@ COPY mysql/wait-for-mysql.sh /wait-for-mysql.sh
 COPY . ${APIDIR}
 RUN cd ${APIDIR} && GO111MODULE=on go build -o bin/go-book ./main.go
 RUN cd ${APIDIR} && cp bin/go-book /usr/local/bin/
+RUN cd ${APIDIR} && cp -r ./ /usr/local/bin/
 
