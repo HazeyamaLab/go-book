@@ -10,10 +10,10 @@ services:
       MYSQL_DATABASE: book #データベースの作成
     volumes:
       - "./mysql/init:/docker-entrypoint-initdb.d"
-  gin_api:
+  go-book:
     links:
       - book_db
     build: . #Dockerfileをビルド
     ports:
       - "8000:8000" #ポート8000番の開放
-    entrypoint: sh /wait-for-mysql.sh book_db gin_api
+    entrypoint: sh /wait-for-mysql.sh book_db go-book

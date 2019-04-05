@@ -1,12 +1,13 @@
 package repository
 
 import (
+	"github.com/HazeyamaLab/go-book/model"
 	"github.com/jinzhu/gorm"
-	"github.com/mytheta/gin_api/model"
 )
 
 type BookRepository interface {
 	Create(book model.Book) error
+	FindOne(id uint) (model.Book, error)
 	FindAll() ([]model.Book, error)
 	Update(book model.Book) error
 	Delete(id uint) error
@@ -24,6 +25,12 @@ func NewBookRepository(db *gorm.DB) BookRepository {
 func (b *bookRepository) Create(book model.Book) error {
 	err := b.db.Create(&book).Error
 	return err
+}
+
+func (b *bookRepository) FindOne(id uint) (model.Book, error) {
+	var book model.Book
+	err := b.db.First(&book, id).Error
+	return book, err
 }
 
 func (b *bookRepository) FindAll() ([]model.Book, error) {

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/HazeyamaLab/go-book/controller"
+	"github.com/HazeyamaLab/go-book/repository"
+	"github.com/HazeyamaLab/go-book/service"
 	"github.com/gin-gonic/gin"
-	"github.com/mytheta/gin_api/controller"
-	"github.com/mytheta/gin_api/repository"
-	"github.com/mytheta/gin_api/service"
 )
 
 func main() {
@@ -16,10 +16,12 @@ func main() {
 	r := gin.Default()
 
 	//routing
-	r.POST("/book", bookController.Create)
-	r.GET("/book", bookController.FindAll)
-	r.PUT("/book/@:id", bookController.Update)
-	r.DELETE("/book/@:id", bookController.Delete)
+	r.GET("/", bookController.Index)
+	r.POST("/create", bookController.Create)
+	r.GET("/update/@:id", bookController.UpdateConfirm)
+	r.POST("/update/@:id", bookController.Update)
+	r.POST("/delete/@:id", bookController.Delete)
+	r.GET("/delete/confirm/@:id", bookController.DeleteConfirm)
 
 	//Listening and serving HTTP
 	r.Run(":8000")

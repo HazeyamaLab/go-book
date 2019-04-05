@@ -1,12 +1,13 @@
 package service
 
 import (
-	"github.com/mytheta/gin_api/model"
-	"github.com/mytheta/gin_api/repository"
+	"github.com/HazeyamaLab/go-book/model"
+	"github.com/HazeyamaLab/go-book/repository"
 )
 
 type BookService interface {
 	Create(book model.Book) error
+	FindOne(id uint) (model.Book, error)
 	FindAll() ([]model.Book, error)
 	Update(book model.Book) error
 	Delete(id uint) error
@@ -23,6 +24,10 @@ func NewBookService(r repository.BookRepository) BookService {
 
 func (b *bookService) Create(book model.Book) error {
 	return b.BookRepository.Create(book)
+}
+
+func (b *bookService) FindOne(id uint) (model.Book, error) {
+	return b.BookRepository.FindOne(id)
 }
 
 func (b *bookService) FindAll() ([]model.Book, error) {

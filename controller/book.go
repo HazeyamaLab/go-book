@@ -2,19 +2,22 @@ package controller
 
 import (
 	"log"
-	"net/http"
 	"strconv"
 
+	"github.com/HazeyamaLab/go-book/model"
+	"github.com/HazeyamaLab/go-book/service"
+	"github.com/HazeyamaLab/go-book/util"
+
 	"github.com/gin-gonic/gin"
-	"github.com/mytheta/gin_api/model"
-	"github.com/mytheta/gin_api/service"
 )
 
 type BookController interface {
+	Index(ctx *gin.Context)
 	Create(c *gin.Context)
-	FindAll(c *gin.Context)
+	UpdateConfirm(c *gin.Context)
 	Update(c *gin.Context)
 	Delete(c *gin.Context)
+	DeleteConfirm(c *gin.Context)
 }
 
 type bookController struct {
@@ -25,77 +28,122 @@ func NewBookController(s service.BookService) BookController {
 	return &bookController{bookService: s}
 }
 
-func (b *bookController) Create(ctx *gin.Context) {
+func (b *bookController) Index(ctx *gin.Context) {
 
-	var book model.Book
-	err := ctx.BindJSON(&book)
+	books, err := b.bookService.FindAll()
 	if err != nil {
-		log.Println(err)
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.HTML(500, "500.html", nil)
 		return
 	}
+
+	totalPrice, err := util.TotalPrice(books)
+	if err != nil {
+		ctx.HTML(500, "view/500.html", nil)
+		return
+	}
+
+	ctx.HTML(200, "view/index.html", gin.H{"books": books, "num": len(books), "sumPrice": totalPrice})
+}
+
+func (b *bookController) Create(ctx *gin.Context) {
+	title := ctx.PostForm("title")
+
+	//intに変換
+	price, err := strconv.Atoi(ctx.PostForm("price"))
+	if err != nil {
+		panic(err)
+	}
+
+	book := model.Book{Title: title, Price: price}
 
 	err = b.bookService.Create(book)
 	if err != nil {
 		log.Println(err)
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.HTML(500, "view/500.html", nil)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "本登録成功",
-	})
-}
-
-func (b *bookController) FindAll(ctx *gin.Context) {
-	books, err := b.bookService.FindAll()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
-		return
-	}
-
-	ctx.JSON(http.StatusOK, books)
+	ctx.Redirect(302, "/")
 }
 
 func (b *bookController) Update(ctx *gin.Context) {
-	var book model.Book
-	err := ctx.BindJSON(&book)
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
-		return
+		panic(err)
 	}
+
+	title := ctx.PostForm("title")
+
+	//intに変換
+	price, err := strconv.Atoi(ctx.PostForm("price"))
+	if err != nil {
+		panic(err)
+	}
+
+	book := model.Book{ID: uint(id), Title: title, Price: price}
 
 	err = b.bookService.Update(book)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, err)
+		ctx.HTML(500, "view/500.html", nil)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "編集できました,"})
+	ctx.Redirect(302, "/")
+}
 
+func (b *bookController) UpdateConfirm(ctx *gin.Context) {
+	n := ctx.Param("id")
+	id, err := strconv.Atoi(n)
+	if err != nil {
+		panic(err)
+	}
+
+	book, err := b.bookService.FindOne(uint(id))
+	if err != nil {
+		ctx.HTML(500, "view/500.html", nil)
+		return
+	}
+
+	ctx.HTML(200, "view/edit/index.html", gin.H{"book": book})
 }
 
 func (b *bookController) Delete(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
+		ctx.HTML(500, "view/500.html", nil)
 		return
 	}
 
 	ok, err := b.bookService.IsExistByID(uint(id))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
+		ctx.HTML(500, "view/500.html", nil)
 		return
 	}
 	if !ok {
-		ctx.JSON(http.StatusNotFound, nil)
+		ctx.HTML(500, "view/500.html", nil)
 	}
 
 	err = b.bookService.Delete(uint(id))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, nil)
+		ctx.HTML(500, "view/500.html", nil)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "削除成功"})
+	ctx.Redirect(302, "/")
+}
+
+func (b *bookController) DeleteConfirm(ctx *gin.Context) {
+	n := ctx.Param("id")
+	id, err := strconv.Atoi(n)
+	if err != nil {
+		panic(err)
+	}
+
+	book, err := b.bookService.FindOne(uint(id))
+	if err != nil {
+		ctx.HTML(500, "view/500.html", nil)
+		return
+	}
+
+	ctx.HTML(200, "view/delete/index.html", gin.H{"book": book})
 }
