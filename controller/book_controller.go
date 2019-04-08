@@ -48,6 +48,7 @@ func (b *bookController) Index(ctx *gin.Context) {
 
 func (b *bookController) Create(ctx *gin.Context) {
 	title := ctx.PostForm("title")
+	author := ctx.PostForm("author")
 
 	//intに変換
 	price, err := strconv.Atoi(ctx.PostForm("price"))
@@ -55,7 +56,7 @@ func (b *bookController) Create(ctx *gin.Context) {
 		panic(err)
 	}
 
-	book := model.Book{Title: title, Price: price}
+	book := model.Book{Title: title, Price: price, Author: author}
 
 	err = b.bookService.Create(book)
 	if err != nil {
