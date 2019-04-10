@@ -12,10 +12,10 @@ func TotalPrice(books []model.Book) (int, error) {
 }
 
 func CarTotalPrice(cars []model.Car) (int, error) {
-	var car_total_price int
+	var carTotalPrice int
 	for _, car := range cars {
-		car_total_price += car.Price
+		carTotalPrice += car.Price
 	}
 
-	return car_total_price, nil
+	return carTotalPrice, nil
 }

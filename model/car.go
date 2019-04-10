@@ -1,8 +1,8 @@
 package model
 
 type Car struct {
-	ID uint
-	Name string
-	Value int
+	ID    uint
+	Name  string
 	Color string
+	Price int
 }
