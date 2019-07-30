@@ -11,11 +11,11 @@ func TotalPrice(books []model.Book) (int, error) {
 	return totalPrice, nil
 }
 
-func CarTotalPrice(cars []model.Car) (int, error) {
-	var carTotalPrice int
-	for _, car := range cars {
-		carTotalPrice += car.Value
-	}
-
-	return carTotalPrice, nil
-}
+//func CarTotalPrice(cars []model.Car) (int, error) {
+//	var carTotalPrice int
+//	for _, car := range cars {
+//		carTotalPrice += car.Value
+//	}
+//
+//	return carTotalPrice, nil
+//}

@@ -4,7 +4,7 @@ LABEL maintainer = "Yutsuki Miyashita <j148015n@st.u-gakugei.ac.jp>"
 LABEL description = "gi-simple-application"
 
 RUN apt-get update -qq && \
-    apt-get install -y mysql-client
+    apt-get install -y default-mysql-client
 
 WORKDIR /
 ENV GOPATH /go
